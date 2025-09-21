@@ -1,0 +1,33 @@
+package com.ecom.security.controller;
+
+import com.ecom.security.dto.LoginActivationDto;
+import com.ecom.security.service.ActivationDeviceIdService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+@Slf4j
+@RestController
+public class MicroServiceController {
+
+    private final ActivationDeviceIdService activationDeviceIdService;
+
+    public MicroServiceController(ActivationDeviceIdService activationDeviceIdService) {
+        this.activationDeviceIdService = activationDeviceIdService;
+    }
+
+    @PostMapping("/_internal/login-activation-deviceId")
+    public void activationDeviceId(@RequestBody LoginActivationDto loginActivationDto){
+        log.info("activation recu");
+        this.activationDeviceIdService.activationDeviceIdService(loginActivationDto);
+    }
+
+    @GetMapping("/_internal/sync")
+    public String syncUsers(Authentication authentication) {
+        log.info("requete de sync");
+        return "Internal sync triggered by client: " + authentication.getName();
+    }
+}

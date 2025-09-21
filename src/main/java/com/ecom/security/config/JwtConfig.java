@@ -35,6 +35,33 @@ public class JwtConfig {
     public PasswordEncoder passwordEncoder(){return new BCryptPasswordEncoder();}
 
 
+
+    // ─── USER TOKENS ──────────────────────────────────────────────────────────────
+
+    //Décoder les token utilisateurs avec clé public ocal
+    @Bean
+    @Qualifier("userJwtDecoder")
+    public JwtDecoder userJwtDecoder() {
+        return NimbusJwtDecoder
+                .withPublicKey(rsakeysConfig.publicKey())
+                .build();
+    }
+
+    //Encoder les token utilisateurs avec double clé en local
+    //@Bean
+    @Qualifier("userJwtEncoder")
+    public JwtEncoder userJwtEncoder() {
+        JWK jwk = new RSAKey.Builder(rsakeysConfig.publicKey())
+                .privateKey(rsakeysConfig.privateKey())
+                .keyID("user-key")
+                .build();
+        JWKSource<SecurityContext> source =
+                new ImmutableJWKSet<>(new JWKSet(jwk));
+        return new NimbusJwtEncoder(source);
+    }
+
+
+
     // ─── TECHNICAL TOKENS ─────────────────────────────────────────────────────────
     //Génère clé RSA pour JWT inter-services
     @Bean
