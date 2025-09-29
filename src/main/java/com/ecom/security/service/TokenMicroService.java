@@ -13,6 +13,8 @@ import java.time.Instant;
 @Service
 public class TokenMicroService {
 
+    @Value("${security.service.url}")
+    private String securityServiceUrl;
     private final JwtEncoder jwtEncoder;
 
     public TokenMicroService(@Qualifier("techJwtEncoder") JwtEncoder jwtEncoder) {
@@ -23,10 +25,10 @@ public class TokenMicroService {
         Instant now = Instant.now();
         // Construction du JWT Claims
         JwtClaimsSet claims = JwtClaimsSet.builder()
-                .issuer("${security.service.url}")
+                .issuer(securityServiceUrl)
                 .issuedAt(now)
                 .expiresAt(now.plus(Duration.ofHours(1)))
-                .subject("security-service")           // your client_id
+                .subject("security-service")
                 .claim("scope", "users:read users:write")
                 .build();
 
