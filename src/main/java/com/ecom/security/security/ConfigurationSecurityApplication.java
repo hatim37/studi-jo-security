@@ -37,7 +37,7 @@ import java.util.UUID;
 @EnableMethodSecurity(prePostEnabled = true)
 public class ConfigurationSecurityApplication {
 
-    private JwtConfig jwtConfig;
+    private final JwtConfig jwtConfig;
     @Value("${CLIENT_SECRET}")
     private  String clientSecret;
     @Value("${CLIENT_ID}")
@@ -47,20 +47,19 @@ public class ConfigurationSecurityApplication {
         this.jwtConfig = jwtConfig;
     }
 
-    // 1) Authorization Server
+
     @Bean
    // @Order(1)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
-        // Applique la configuration par défaut du serveur d'autorisation OAuth2
+
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-        // Tu peux customiser ici si besoin (ex: CSRF, CORS, pages de login...)
         return http.build();
     }
 
-    // 2) RegisteredClient pour le grant client_credentials
+    // 2) RegisteredClient pour réception et création du tokenTechnique
     @Bean
     public RegisteredClientRepository registeredClientRepository(PasswordEncoder passwordEncoder) {
-        // Exemple d'un client "technique"
+
         RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId(clientId)
                 .clientSecret(passwordEncoder.encode(clientSecret))

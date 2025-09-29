@@ -25,9 +25,4 @@ public class MicroServiceController {
         this.activationDeviceIdService.activationDeviceIdService(loginActivationDto);
     }
 
-    @GetMapping("/_internal/sync")
-    public String syncUsers(Authentication authentication) {
-        log.info("requete de sync");
-        return "Internal sync triggered by client: " + authentication.getName();
-    }
 }

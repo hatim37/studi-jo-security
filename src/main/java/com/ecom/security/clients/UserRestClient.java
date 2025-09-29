@@ -12,23 +12,23 @@ import java.util.List;
 
 
 
-@FeignClient(name = "security-service", url = "${users.service.url}")
+@FeignClient(name = "users-service", url = "${users.service.url}")
 public interface UserRestClient {
 
     @GetMapping("/users/{id}")
-    @CircuitBreaker(name="security", fallbackMethod = "getDefaultUser")
+    @CircuitBreaker(name="users", fallbackMethod = "getDefaultUser")
     User findUserById(@PathVariable Long id);
 
     @GetMapping("/users")
-    @CircuitBreaker(name="security", fallbackMethod = "getAllUser")
+    @CircuitBreaker(name="users", fallbackMethod = "getAllUser")
     List<User> allUsers();
 
     @GetMapping("/users-email/{email}")
-    @CircuitBreaker(name="security", fallbackMethod = "getDefaultEmail")
+    @CircuitBreaker(name="users", fallbackMethod = "getDefaultEmail")
     User findByEmail( @PathVariable String email);
 
     @GetMapping("/_internal/users-login/{email}")
-    @CircuitBreaker(name="security", fallbackMethod = "getDefaultEmailLogin")
+    @CircuitBreaker(name="users", fallbackMethod = "getDefaultEmailLogin")
     User findByEmailLogin(@RequestHeader("Authorization") String authorization,@PathVariable String email);
 
    default User getDefaultUser(Long id, Exception e) {
