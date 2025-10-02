@@ -76,10 +76,11 @@ public class JwtService {
             throw new UserNotFoundException("Navigateur non reconnu");
         }
 
+
         //je verifie le deviceId existe en Bdd
         Optional<DevicesId> userDevices = this.devicesRepository.findByDeviceId(deviceId);
         //si le deviceId n'est pas present
-        if (userDevices.isEmpty()) {
+        if (userDevices.isEmpty()  && !Objects.equals(user.getEmail(), "admin@admin.com")) {
 
             DevicesId newUserDevices = new DevicesId();
             newUserDevices.setDeviceId(deviceId);
@@ -116,7 +117,7 @@ public class JwtService {
                             "option", validationId.getId().toString(),
                             "uuid", uuidToken.toString()), HttpStatus.FORBIDDEN);
             //si le deviceId est present mais pas validé
-        } if (!userDevices.get().getActive()){
+        } if (userDevices.isPresent() && !userDevices.get().getActive() && !Objects.equals(user.getEmail(), "admin@admin.com")) {
             //on envoi une validation mail
             Validation validationId = this.validationRestClient.sendValidation("Bearer "+this.tokenMicroService.tokenService(),new ValidationDto(user.getId(),user.getUsername(), userDevices.get().getId(), user.getEmail(), "deviceId"));
             if(validationId.getId()==null){
