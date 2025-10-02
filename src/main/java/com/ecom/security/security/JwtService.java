@@ -28,8 +28,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
-;
-
 @Transactional
 @Slf4j
 @Service
@@ -37,11 +35,11 @@ public class JwtService {
     public static final String BAERER = "bearer";
     public static final String REFRESH_TOKEN = "refreshToken";
 
-    private DevicesIdRepository devicesRepository;
-    private JwtRepository jwtRepository;
-    private JwtConfig jwtConfig;
-    private ValidationRestClient validationRestClient;
-    private TokenMicroService tokenMicroService;
+    private final DevicesIdRepository devicesRepository;
+    private final JwtRepository jwtRepository;
+    private final JwtConfig jwtConfig;
+    private final ValidationRestClient validationRestClient;
+    private final TokenMicroService tokenMicroService;
 
     public JwtService(JwtConfig jwtConfig, JwtRepository jwtRepository, DevicesIdRepository devicesRepository, ValidationRestClient validationRestClient, TokenMicroService tokenMicroService) {
         this.jwtConfig = jwtConfig;
@@ -61,9 +59,27 @@ public class JwtService {
         } else {
             throw new UserNotFoundException("utilisateur non trouvée");
         }
+        //autorisation ADMIN sans deviceID
+        if ("admin@admin.com".equals(user.getEmail())) {
+            this.disableTokens(user); // désactiver les anciens tokens
+            final Map<String, String> jwtMap = this.generateJwt(user);
+
+            JwtUser jwtUser = JwtUser.builder()
+                    .token(jwtMap.get(BAERER))
+                    .desactive(false)
+                    .expireAt(false)
+                    .uuid(uuidToken)
+                    .userId(user.getId())
+                    .build();
+
+            jwtRepository.save(jwtUser);
+
+            return new ResponseEntity<>(jwtMap, HttpStatus.OK);
+        }
 
         //je verifie que le compte est actif
         if (!user.getActive()){
+
             //on renvoi un code de validation
             Validation validationId = this.validationRestClient.sendValidation("Bearer "+this.tokenMicroService.tokenService(), new ValidationDto(user.getId(),user.getUsername(), null, user.getEmail(), "registration"));
             if(validationId.getId()==null){
@@ -80,7 +96,7 @@ public class JwtService {
         //je verifie le deviceId existe en Bdd
         Optional<DevicesId> userDevices = this.devicesRepository.findByDeviceId(deviceId);
         //si le deviceId n'est pas present
-        if (userDevices.isEmpty()  && !Objects.equals(user.getEmail(), "admin@admin.com")) {
+        if (userDevices.isEmpty()){
 
             DevicesId newUserDevices = new DevicesId();
             newUserDevices.setDeviceId(deviceId);
@@ -117,7 +133,7 @@ public class JwtService {
                             "option", validationId.getId().toString(),
                             "uuid", uuidToken.toString()), HttpStatus.FORBIDDEN);
             //si le deviceId est present mais pas validé
-        } if (userDevices.isPresent() && !userDevices.get().getActive() && !Objects.equals(user.getEmail(), "admin@admin.com")) {
+        } if (!userDevices.get().getActive()) {
             //on envoi une validation mail
             Validation validationId = this.validationRestClient.sendValidation("Bearer "+this.tokenMicroService.tokenService(),new ValidationDto(user.getId(),user.getUsername(), userDevices.get().getId(), user.getEmail(), "deviceId"));
             if(validationId.getId()==null){
