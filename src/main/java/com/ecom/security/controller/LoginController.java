@@ -12,6 +12,7 @@ import com.ecom.security.security.JwtService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,9 +30,9 @@ import java.util.UUID;
 public class LoginController {
 
     private final UserRestClient userRestClient;
-    private AuthenticationManager authenticationManager;
-    private JwtService jwtService;
-    private JwtRepository jwtRepository;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
+    private final JwtRepository jwtRepository;
 
     public LoginController(UserRestClient userRestClient, AuthenticationManager authenticationManager, JwtService jwtService, JwtRepository jwtRepository) {
         this.userRestClient = userRestClient;
@@ -70,16 +71,13 @@ public class LoginController {
         } else {
             throw new UserNotFoundException("Service indisponible");
         }
-
     }
 
 
     @GetMapping(path = "/users")
-    //@PreAuthorize("hasAuthority('SCOPE_USER')")
+    @PreAuthorize("hasAuthority('SCOPE_AMDIN')")
     public List<User> getUsers() {
-        List<User> users = userRestClient.allUsers();
-        log.info(users.toString());
-        return users;
+        return userRestClient.allUsers();
     }
 
     @GetMapping("/users/{id}")

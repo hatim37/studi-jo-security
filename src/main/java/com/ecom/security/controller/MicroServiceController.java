@@ -21,7 +21,6 @@ public class MicroServiceController {
 
     @PostMapping("/_internal/login-activation-deviceId")
     public void activationDeviceId(@RequestBody LoginActivationDto loginActivationDto){
-        log.info("activation recu");
         this.activationDeviceIdService.activationDeviceIdService(loginActivationDto);
     }
 
