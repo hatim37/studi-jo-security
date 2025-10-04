@@ -189,8 +189,6 @@ public class JwtService {
     }
 
 
-
-
     @Scheduled(cron= "@monthly")
     public void removeUselessJwt(){
         this.jwtRepository.deleteAllByExpireAtAndDesactive(true, true);

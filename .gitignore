@@ -33,11 +33,7 @@ build/
 .vscode/
 
 
-# Fichiers d'env
-.env
-.env.*
-src/main/resources/.env
-src/main/resources/.env.*
+
 
 # Secrets/credentials
 src/main/resources/certs/keyPublic-prod.pem

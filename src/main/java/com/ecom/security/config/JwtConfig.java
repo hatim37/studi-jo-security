@@ -34,11 +34,9 @@ public class JwtConfig {
     @Bean
     public PasswordEncoder passwordEncoder(){return new BCryptPasswordEncoder();}
 
-
-
     // ─── USER TOKENS ──────────────────────────────────────────────────────────────
 
-    //Décoder les token utilisateurs avec clé public ocal
+    //Décoder les token utilisateurs avec clé public local
     @Bean
     @Qualifier("userJwtDecoder")
     public JwtDecoder userJwtDecoder() {
