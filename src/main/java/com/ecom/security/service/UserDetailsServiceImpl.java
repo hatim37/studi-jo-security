@@ -27,7 +27,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         String bearer = "Bearer " + token;
 
         User user = userRepository.findByEmailLogin(bearer,email);
-        log.info(user.getUsername());
         if (user.getName().contains("non trouvé")) {
             throw new UserNotFoundException("Email ou mot de passe invalide load");
         }

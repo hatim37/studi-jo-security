@@ -38,10 +38,10 @@ import java.util.UUID;
 public class ConfigurationSecurityApplication {
 
     private final JwtConfig jwtConfig;
-    @Value("${CLIENT_SECRET}")
-    private  String clientSecret;
-    @Value("${CLIENT_ID}")
-    private  String clientId;
+    @Value("${client.id}")
+    private String clientId;
+    @Value("${client.secret}")
+    private String clientSecret;
 
     public ConfigurationSecurityApplication(JwtConfig jwtConfig) {
         this.jwtConfig = jwtConfig;
@@ -97,6 +97,7 @@ public class ConfigurationSecurityApplication {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(new AntPathRequestMatcher("/actuator/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/signin")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/signin-validation")).permitAll()
                         .anyRequest().authenticated())
