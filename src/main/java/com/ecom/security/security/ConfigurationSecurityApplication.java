@@ -18,6 +18,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
@@ -47,6 +48,13 @@ public class ConfigurationSecurityApplication {
         this.jwtConfig = jwtConfig;
     }
 
+    /*@Bean
+    public SecurityFilterChain authorizationServerSecurityFilterChain(
+            HttpSecurity http,
+            @Qualifier("techJwtEncoder") JwtEncoder jwtEncoder) throws Exception {
+        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
+        return http.build();
+    }*/
 
     @Bean
    // @Order(1)

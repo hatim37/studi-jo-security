@@ -163,7 +163,7 @@ public class JwtService {
 
     }
 
-    private Map<String, String> generateJwt(User user) {
+    public Map<String, String> generateJwt(User user) {
         Map<String, String> idToken = new HashMap<>();
         Instant instant = Instant.now();
         JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
@@ -183,7 +183,7 @@ public class JwtService {
     }
 
 
-    private void disableTokens(User user) {
+    public void disableTokens(User user) {
         final List<JwtUser> jwtList = this.jwtRepository.findUser(user.getId()).collect(Collectors.toList());
         this.jwtRepository.deleteAll(jwtList);
     }

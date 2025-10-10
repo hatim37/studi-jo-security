@@ -22,6 +22,4 @@ public interface ValidationRestClient {
        return validation;
    }
 
-
-
 }

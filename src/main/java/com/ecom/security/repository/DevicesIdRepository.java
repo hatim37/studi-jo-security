@@ -10,4 +10,6 @@ public interface DevicesIdRepository extends JpaRepository<DevicesId, Integer> {
     Optional<DevicesId> findByDeviceId(String deviceId);
 
     Optional<DevicesId> findById(Long id);
+
+
 }

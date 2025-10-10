@@ -59,8 +59,8 @@ public class JwtConfig {
     }
 
 
-
     // ─── TECHNICAL TOKENS ─────────────────────────────────────────────────────────
+
     //Génère clé RSA pour JWT inter-services
     @Bean
     @Qualifier("techRsaKey")
